@@ -1,0 +1,11 @@
+{
+    "id": "user123",                    
+    "username": "user1",               
+    "counterValue": 5,                   
+    "lastCounterUpdate": "2024-09-27T14:45:00Z", 
+    "lastLogin": "2024-09-27T09:30:00Z", 
+    "lastPasswordChange": "2024-09-15T10:00:00Z", 
+    "accountStatus": "Active",          
+    "createdAt": "2024-09-01T12:00:00Z" 
+  }
+  
