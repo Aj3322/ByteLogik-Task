@@ -2,7 +2,9 @@ import 'package:byte_logik_task/app/data/model/user_model.dart';
 import 'package:byte_logik_task/app/data/service/user_service.dart';
 import 'package:byte_logik_task/app/modules/home/controllers/home_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import '../../modules/auth/widgets/Email_sent.dart';
 import '../../routes/app_pages.dart';
 import 'package:flutter/material.dart';
 
@@ -32,9 +34,9 @@ class AuthService extends GetxService {
       Get.offAllNamed(Routes.LOGIN);
     } else {
       Get.offAllNamed(Routes.HOME);
-
     }
   }
+
   // Map FirebaseAuth errors to user-friendly messages
   String _handleFirebaseAuthError(FirebaseAuthException e) {
     switch (e.code) {
@@ -48,7 +50,7 @@ class AuthService extends GetxService {
         return 'The password is too weak. Please choose a stronger password.';
       case 'user-disabled':
         return 'This account has been disabled by an administrator.';
-      case 'user-not-found'||'invalid-credential':
+      case 'user-not-found' || 'invalid-credential':
         return 'No account found with this email.';
       case 'wrong-password':
         return 'Incorrect password provided.';
@@ -61,21 +63,27 @@ class AuthService extends GetxService {
   }
 
   // Method to sign up a new user using email and password
-  Future<String?> signUpWithEmail(String email, String password, String name) async {
+  Future<String?> signUpWithEmail(
+      String email, String password, String name) async {
     // try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      User? user = userCredential.user;
-      
-      
-      // After sign up, save user info to Firestore
-      if (user != null) {
-        UserModel newUserModel = UserModel(id:user.uid,username: name, counterValue:0, createdAt: DateTime.now(),lastLogin: DateTime.now(), email: email);
-        userService.postUser(newUserModel);
-        return null;
-      }
+    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    User? user = userCredential.user;
+
+    // After sign up, save user info to Firestore
+    if (user != null) {
+      UserModel newUserModel = UserModel(
+          id: user.uid,
+          username: name,
+          counterValue: 0,
+          createdAt: DateTime.now(),
+          lastLogin: DateTime.now(),
+          email: email);
+      userService.postUser(newUserModel);
+      return null;
+    }
     // } on FirebaseAuthException catch (e) {
     //   return _handleFirebaseAuthError(e);
     // } catch (e) {
@@ -100,12 +108,14 @@ class AuthService extends GetxService {
         return null; // Success
       }
     } on FirebaseAuthException catch (e) {
-      Get.defaultDialog(title:e.code,content: Column(
-        children: [
-          Text(e.message.toString()),
-          TextButton(onPressed: () => Get.back(), child: const Text('Ok'))
-        ],
-      ));
+      Get.defaultDialog(
+          title: e.code,
+          content: Column(
+            children: [
+              Text(e.message.toString()),
+              TextButton(onPressed: () => Get.back(), child: const Text('Ok'))
+            ],
+          ));
       return _handleFirebaseAuthError(e);
     } catch (e) {
       return 'An unexpected error occurred: $e';
@@ -125,9 +135,17 @@ class AuthService extends GetxService {
   // Method to send a password reset email
   Future<String?> resetPassword(String email) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email);
+      await _auth
+          .sendPasswordResetEmail(email: email)
+          .then((value)=>Get.defaultDialog(title:'',content: const EmailSentDialog()));
       return 'A password reset link has been sent to your email.';
     } on FirebaseAuthException catch (e) {
+      Get.dialog(Scaffold(
+        appBar: AppBar(
+          title: Text("Failed to send Email"),
+        ),
+        body: Text(e.message.toString()),
+      ));
       return _handleFirebaseAuthError(e);
     } catch (e) {
       return 'An unexpected error occurred: $e';
@@ -153,11 +171,12 @@ class AuthService extends GetxService {
   }
 
   // Method to log in or sign up based on user existence
-  Future<String?> loginOrSignUp(String email, String password, String name) async {
+  Future<String?> loginOrSignUp(
+      String email, String password, String name) async {
     try {
       String? loginError = await loginWithEmail(email, password);
       if (loginError != null) {
-        String? signUpError = await signUpWithEmail(email, password,name);
+        String? signUpError = await signUpWithEmail(email, password, name);
         return signUpError;
       }
       return null; // Login success

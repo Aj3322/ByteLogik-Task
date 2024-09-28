@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
 import '../../../utils/utils.dart';
-import '../controllers/auth_controller.dart';
 import '../widgets/logInForm.dart';
 class LoginView extends GetView {
   const LoginView({super.key});
@@ -66,7 +65,7 @@ class LoginView extends GetView {
                         ),
                         const SizedBox(height: 20,),
                         const LoginForm(),
-                        Container(width:width,alignment: Alignment.topRight,child: TextButton(onPressed: (){}, child: Text("Forgot Password ?",style: TextStyle(fontSize: 12,color: widgetColor),))),
+                        Container(width:width,alignment: Alignment.topRight,child: TextButton(onPressed: (){Get.toNamed(Routes.RESET_PASSWORD);}, child: Text("Forgot Password ?",style: TextStyle(fontSize: 12,color: widgetColor),))),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

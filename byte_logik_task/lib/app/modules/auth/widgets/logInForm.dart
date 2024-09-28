@@ -37,7 +37,8 @@ class _LoginFormState extends State<LoginForm> {
   String error = '';
   @override
   Widget build(BuildContext context) {
-    return Form(
+    return
+      Form(
       key: _formKey,
       child: Column(
         children: [
@@ -55,10 +56,9 @@ class _LoginFormState extends State<LoginForm> {
             clipBehavior: Clip.hardEdge,
             height: 40,
             child: TextFormField(
-              cursorHeight: 2,
               expands: false,
               maxLines: 1,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 filled: true,
                 fillColor: Colors.white38,
                 border: InputBorder.none,

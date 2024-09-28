@@ -52,6 +52,16 @@ class SignupView extends GetView {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+
+
+
+
+
+
+
+
+
+
                         Container(
                           width: width,
                           alignment: Alignment.centerLeft,
